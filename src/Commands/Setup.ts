@@ -45,13 +45,15 @@ export default {
 		if (
 			!permissions.has("ViewChannel") ||
 			!permissions.has("SendMessages") ||
-			!permissions.has("EmbedLinks")
+			!permissions.has("EmbedLinks") ||
+			!permissions.has("ManageGuild")
 		) {
 			return interaction.editReply({
 				embeds: [{
 					color: COLOR.ERROR,
 					description: `
-${EMOJI.ERROR} Please make sure I have the following permissions in that channel:
+${EMOJI.ERROR} Please make sure I have the following permissions:
+\\- Manage Server
 \\- View Channel
 \\- Send Messages
 \\- Embed Links
@@ -69,6 +71,6 @@ ${EMOJI.ERROR} Please make sure I have the following permissions in that channel
 ${EMOJI.SUCCESS} Setup successful!
 -# Logs will appear as people interact with your server`.trim()
 			}]
-		})
+		});
 	}
 } as CommandHandler;
