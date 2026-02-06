@@ -16,6 +16,7 @@ export default {
 		const invite = await GetInvite(code);
 		if (!invite) {
 			return interaction.reply({
+				ephemeral: true,
 				embeds: [{
 					color: COLOR.ERROR,
 					description: `Invite no longer exists :(`
@@ -25,6 +26,7 @@ export default {
 
 		if (!confirm) {
 			return await interaction.reply({
+				ephemeral: true,
 				embeds: [{
 					color: COLOR.ERROR,
 					description: `

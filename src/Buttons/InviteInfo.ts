@@ -13,7 +13,7 @@ export default {
 		const code = args[0];
 
 		if (!interaction.deferred && !interaction.replied) {
-			await interaction.deferReply({})
+			await interaction.deferReply({ ephemeral: true });
 		}
 
 		const invite = await GetInvite(code);
