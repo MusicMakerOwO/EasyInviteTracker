@@ -1,0 +1,13 @@
+# Typescript Output
+build/
+tsconfig.tsbuildinfo
+
+# IDE files
+.idea
+.vscode
+
+# Database
+database.sqlite*
+
+node_modules/
+config.json
