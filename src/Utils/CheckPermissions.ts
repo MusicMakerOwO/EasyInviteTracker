@@ -8,6 +8,7 @@ export function CheckPermissions(interaction: Exclude<Interaction, AutocompleteI
 	if (missingPermissions.length === 0) return true;
 
 	interaction.reply({
+		ephemeral: true,
 		embeds: [{
 			color: COLOR.ERROR,
 			description: `
