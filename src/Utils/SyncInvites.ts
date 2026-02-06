@@ -4,18 +4,12 @@ import {FetchInvites} from "./Parsers/FetchInvites";
 import {Log} from "./Log";
 import {SendLog} from "./Logs/SendLog";
 import {COLOR, MAX_INVITES_PER_GUILD} from "./Constants";
-import config from "../config";
 
 export async function SyncInvitesForGuild(guild: Guild) {
 	const start = process.hrtime.bigint();
 
 	Database.prepare(`DELETE FROM Invites WHERE guild_id = ?`).run(guild.id);
 	Database.prepare("INSERT INTO Guilds (id, name) VALUES (?, ?) ON CONFLICT (id) DO UPDATE SET name = excluded.name").run(guild.id, guild.name);
-
-	const logChannelID = Database.prepare("SELECT log_channel FROM Guilds WHERE id = ?").pluck().get(guild.id) as string;
-	if (!logChannelID && !config.DEV_MODE) {
-		return Log('DEBUG', `[!] Skipping guild ${guild.name} (${guild.id}) due to missing log channel`);
-	}
 
 	const invites = await FetchInvites(guild);
 	if (invites.length >= MAX_INVITES_PER_GUILD) {
