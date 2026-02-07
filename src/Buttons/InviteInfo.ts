@@ -52,18 +52,31 @@ export default {
 			embed.description += `\n\n**Vanity**: ✅`;
 		}
 
-		interaction.editReply({
-			embeds: [embed],
-			// only include button if guild IDs match, meaning invite can be managed from this context
-			components: invite.guild_id !== interaction.guildId ? [] : [{
-				type: 1,
-				components: [{
+		const buttons = {
+			type: 1,
+			components: [
+				{
 					type: 2,
 					style: 4,
 					label: 'Delete Invite',
-					custom_id: `invite-delete_${invite.code}`
-				}]
-			}]
+					custom_id: `invite-delete_${invite.code}`,
+					disabled: invite.guild_id !== interaction.guildId
+				},
+				{
+					type: 2,
+					style: 2,
+					label: 'User Info',
+					custom_id: `user-info_${invite.owner_id}`,
+					disabled: invite.owner_id === null,
+					emoji: '👤'
+				}
+			]
+		}
+
+		interaction.editReply({
+			embeds: [embed],
+			// only include button if guild IDs match, meaning invite can be managed from this context
+			components: [buttons]
 		})
 	}
 } as ButtonHandler;
