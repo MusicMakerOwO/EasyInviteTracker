@@ -8,6 +8,15 @@ const CHANGELOG: Record<string, {date: string, changes: string[]}> = {
 		changes: [
 			"Initial release, the 3rd rewrite of this bot over the years <3"
 		]
+	},
+	"3.0.1": {
+		date: "2026 February 7th",
+		changes: [
+			"Added a user info button in invite info page",
+			"Fixed user leave dates showing null",
+			"Fixed an index out of bounds error on invite listing",
+			"Fixed deletion logs to show the responsible user when using the delete button",
+		]
 	}
 }
 
