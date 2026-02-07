@@ -23,11 +23,10 @@ export default {
 			})
 		}
 
-		const memberMetadata = Database.prepare("SELECT joined_at, left_at FROM Members WHERE guild_id = ? AND id = ?").get(interaction.guildId, targetID) as { joined_at: number; left_at: number } | undefined
-			?? { joined_at: -1, left_at: -1 };
+		const memberMetadata = Database.prepare("SELECT joined_at, left_at FROM Members WHERE guild_id = ? AND id = ?").get(interaction.guildId, targetID) as { joined_at: number | undefined; left_at: number | undefined };
 
-		const joinedTimestamp = memberMetadata.joined_at === -1 ? null : `<t:${memberMetadata.joined_at}:f>`;
-		const leftTimestamp = memberMetadata.left_at === -1 ? null : `<t:${memberMetadata.left_at}:f>`;
+		const joinedTimestamp = memberMetadata.joined_at ? `<t:${memberMetadata.joined_at}:f>` : null;
+		const leftTimestamp   = memberMetadata.left_at ? `<t:${memberMetadata.left_at}:f>` : null;
 
 		const embed = {
 			color: COLOR.PRIMARY,
@@ -38,9 +37,9 @@ Bot: ${user.bot ? '❌' : '✅'}`.trim()
 		}
 
 		if (joinedTimestamp) {
-			embed.description += `\n\nJoined at: <t:${joinedTimestamp}:f>`;
+			embed.description += `\n\nJoined at: ${joinedTimestamp}`;
 			if (leftTimestamp) {
-				embed.description += `\nLeft at <t:${leftTimestamp}:f>`;
+				embed.description += `\nLeft at ${leftTimestamp}`;
 			}
 		}
 
