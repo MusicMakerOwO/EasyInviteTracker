@@ -45,7 +45,7 @@ export default {
 			components: [{
 				type: 3,
 				custom_id: 'invite-info',
-				options: new Array(PAGE_SIZE)
+				options: new Array( Math.min(PAGE_SIZE, inviteList.length) )
 			}]
 		}
 
