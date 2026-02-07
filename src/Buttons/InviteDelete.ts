@@ -48,7 +48,7 @@ __This cannot be undone!__
 							type: 2,
 							style: 4,
 							label: 'Delete',
-							custom_id: 'close'
+							custom_id: `invite-delete_${invite.code}_confirm`
 						}
 					]
 				}]
@@ -71,6 +71,8 @@ __This cannot be undone!__
 		}
 
 		DiscardInvite(invite.code);
+
+		client.invite_delete_ownership.set(invite.code, interaction.user.id);
 
 		await interaction.editReply({
 			embeds: [{
