@@ -1,6 +1,7 @@
 import { Client } from 'discord.js';
 import {ButtonHandler, CommandHandler, ModalHandler, SelectMenuHandler} from "./Typings/HandlerTypes";
 import config, {IConfig} from "./config";
+import { FIFOCache } from "./Utils/FIFOCache";
 
 interface IClient extends Client {
 	config: IConfig;
@@ -12,7 +13,7 @@ interface IClient extends Client {
 	context: Map<string, CommandHandler>;
 
 	/** invite code -> user who deleted (don't trust audit log) */
-	invite_delete_ownership: Map<string, string>;
+	invite_delete_ownership: FIFOCache<string, string>;
 }
 
 const client = new Client({
@@ -30,6 +31,6 @@ client.menus = new Map();
 client.modals = new Map();
 client.context = new Map();
 
-client.invite_delete_ownership = new Map();
+client.invite_delete_ownership = new FIFOCache(10);
 
 export { client, IClient }
