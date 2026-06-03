@@ -2,6 +2,7 @@ import {CommandHandler} from "../Typings/HandlerTypes";
 import {SlashCommandBuilder} from "discord.js";
 import {Database} from "../Database";
 import {COLOR} from "../Utils/Constants";
+import { LATEST_VERSION } from "./Changelog";
 
 export default {
 	aliases: ['about', 'botinfo'],
@@ -16,7 +17,7 @@ export default {
 			title: 'Easier Invite Tracker',
 			description: `
 **Owner** : @musicmaker
-**Version** : 3.0.0
+**Version** : ${LATEST_VERSION}
 
 **Servers** : ${client.guilds.cache.size}
 **Users** : ${client.users.cache.size}
