@@ -73,10 +73,10 @@ export default {
 			]
 		}
 
-		interaction.editReply({
+		void interaction.editReply({
 			embeds: [embed],
 			// only include button if guild IDs match, meaning invite can be managed from this context
 			components: [buttons]
 		})
 	}
-} as ButtonHandler;
+} satisfies ButtonHandler as ButtonHandler;

@@ -28,17 +28,17 @@ const ConfigTemplate: { [K in keyof IConfig]: IConfig[K] extends string ? 'strin
 	FANCY_ERRORS: 'boolean'
 }
 
+/* eslint-disable @typescript-eslint/no-require-imports */
 const config = require('../config.json') as IConfig;
+/* eslint-enable @typescript-eslint/no-require-imports */
 
-for (const [key, type] of Object.entries(ConfigTemplate)) {
+for (const [key, type] of Object.entries(ConfigTemplate) as [ keyof typeof ConfigTemplate, 'string' | 'boolean' ][]) {
 	if (!(key in config)) {
 		Log('ERROR', `[~] Missing ${key} in config.json`);
 		process.exit(1);
 	}
 
-	// @ts-ignore - The key will always be valid here
 	if (typeof config[key] !== type) {
-		// @ts-ignore
 		Log('ERROR', `[~] Expected ${key} to be a ${type} in config.json - Got ${typeof config[key]} instead`);
 		process.exit(1);
 	}

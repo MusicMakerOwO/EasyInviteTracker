@@ -6,4 +6,4 @@ export default {
 		await interaction.deferUpdate();
 		await interaction.deleteReply();
 	}
-} as ButtonHandler;
+} satisfies ButtonHandler as ButtonHandler;

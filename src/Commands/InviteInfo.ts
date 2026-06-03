@@ -19,6 +19,6 @@ export default {
 		if (!code) throw new Error(`Could not extract code : ${input}`);
 
 		const inviteInfoButton = client.buttons.get('invite-info')!;
-		inviteInfoButton.execute(interaction as unknown as ButtonInteraction, client, [code]);
+		void inviteInfoButton.execute(interaction as unknown as ButtonInteraction, client, [code]);
 	}
-} as CommandHandler;
+} satisfies CommandHandler as CommandHandler;

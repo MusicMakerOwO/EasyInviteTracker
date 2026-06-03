@@ -5,11 +5,11 @@ import {SimpleInvite} from "../../Typings/DatabaseTypes";
 import {SaveUser} from "../../CRUD/Users";
 
 export async function FetchInvites(guild: Guild): Promise<SimpleInvite[]> {
+	let activeInvites: Awaited<ReturnType<Guild['invites']['fetch']>>
 	try {
-		var activeInvites = await guild.invites.fetch();
+		activeInvites = await guild.invites.fetch();
 	} catch (error) {
-		// @ts-ignore
-		if (error.code === 50013) {
+		if (typeof error === 'object' && error && 'code' in error && error.code === 50013) {
 			Log('ERROR', `[~] Missing permissions to fetch invites in ${guild.name} (${guild.id})`);
 		} else {
 			Log('ERROR', `[~] Failed to fetch invites in ${guild.name} (${guild.id})`);

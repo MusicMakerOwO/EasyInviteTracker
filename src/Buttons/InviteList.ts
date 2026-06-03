@@ -2,18 +2,23 @@ import {ButtonHandler} from "../Typings/HandlerTypes";
 import {GetAllInvites} from "../CRUD/Invites";
 import {COLOR} from "../Utils/Constants";
 import {CheckPermissions} from "../Utils/CheckPermissions";
+import { ButtonInteraction, ChatInputCommandInteraction } from "discord.js";
 
 const PAGE_SIZE = 10;
 
 export default {
 	customID: 'list-invites',
-	execute: async (interaction, client, args) => {
+	execute: async (interaction: ButtonInteraction | ChatInputCommandInteraction, client, args) => {
 		if (!CheckPermissions(interaction, ['ManageGuild'])) return;
 
-		let targetPage = args[0];
+		const targetPage = args[0];
 
 		if (!interaction.deferred && !interaction.replied) {
-			interaction.deferUpdate ? await interaction.deferUpdate({}) : await interaction.deferReply({ ephemeral: true });
+			if ('deferUpdate' in interaction) {
+				await interaction.deferUpdate({})
+			} else {
+				await interaction.deferReply({ ephemeral: true });
+			}
 		}
 
 		// sort by uses descending
@@ -103,9 +108,9 @@ export default {
 			]
 		}
 
-		interaction.editReply({
+		void interaction.editReply({
 			embeds: [embed],
 			components: [navButtons, selectMenu]
 		})
 	}
-} as ButtonHandler;
+} satisfies ButtonHandler as ButtonHandler;

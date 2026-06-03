@@ -9,6 +9,6 @@ export default {
 	execute: async function(interaction, client) {
 		if (!CheckPermissions(interaction, ['ManageGuild'])) return;
 		const button = client.buttons.get('list-invites')!;
-		button.execute(interaction as unknown as ButtonInteraction, client, ['first']);
+		void button.execute(interaction as unknown as ButtonInteraction, client, ['first']);
 	}
-} as CommandHandler;
+} satisfies CommandHandler as CommandHandler;

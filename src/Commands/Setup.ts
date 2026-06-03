@@ -1,7 +1,7 @@
 import {SlashCommandBuilder, TextChannel} from "discord.js";
 import {CommandHandler} from "../Typings/HandlerTypes";
 import {COLOR, EMOJI} from "../Utils/Constants";
-import {Database} from "../Utils/Database";
+import {Database} from "../Database";
 import {CheckPermissions} from "../Utils/CheckPermissions";
 
 export default {
@@ -28,7 +28,7 @@ export default {
 		const channel = interaction.options.getChannel('channel')!;
 
 		// fake loading lol
-		await new Promise(r => setTimeout(r, 2000));
+		await new Promise(r => setTimeout(r, 2000).unref());
 
 		if (channel.type !== 0) {
 			return interaction.editReply({
@@ -64,7 +64,7 @@ ${EMOJI.ERROR} Please make sure I have the following permissions:
 
 		Database.prepare("UPDATE Guilds SET log_channel = ? WHERE id = ?").run(channel.id, interaction.guildId);
 
-		interaction.editReply({
+		void interaction.editReply({
 			embeds: [{
 				color: COLOR.PRIMARY,
 				description: `
@@ -73,4 +73,4 @@ ${EMOJI.SUCCESS} Setup successful!
 			}]
 		});
 	}
-} as CommandHandler;
+} satisfies CommandHandler as CommandHandler;

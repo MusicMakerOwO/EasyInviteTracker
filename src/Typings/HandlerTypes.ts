@@ -3,36 +3,36 @@ import {
 	ButtonInteraction,
 	ChatInputCommandInteraction,
 	ModalSubmitInteraction,
-	SlashCommandBuilder, StringSelectMenuInteraction
+	SlashCommandBuilder,
+	SlashCommandOptionsOnlyBuilder,
+	StringSelectMenuInteraction
 } from "discord.js";
-import {IClient} from "../Client";
-import {ObjectValues} from "./Helpers";
-import {Events} from "../Utils/DiscordConstants";
+import { IClient } from "../Client";
 
 export interface CommandHandler {
-	data: SlashCommandBuilder;
+	data: SlashCommandBuilder | SlashCommandOptionsOnlyBuilder;
 	aliases?: string[];
-	autocomplete?: (interaction: AutocompleteInteraction, client: IClient) => Promise<any>;
-	execute: (interaction: ChatInputCommandInteraction, client: IClient) => Promise<any>;
+	autocomplete?: (interaction: AutocompleteInteraction, client: IClient) => Promise<unknown>;
+	execute: (interaction: ChatInputCommandInteraction, client: IClient) => Promise<unknown>;
 }
 
 export interface ButtonHandler {
 	customID: string;
-	execute: (interaction: ButtonInteraction, client: IClient, args: string[]) => Promise<any>;
+	execute: (interaction: ButtonInteraction, client: IClient, args: string[]) => Promise<unknown>;
 }
 
 export interface SelectMenuHandler {
 	customID: string;
-	execute: (interaction: StringSelectMenuInteraction, client: IClient, args: string[]) => Promise<any>;
+	execute: (interaction: StringSelectMenuInteraction, client: IClient, args: string[]) => Promise<unknown>;
 }
 
 export interface ModalHandler {
 	customID: string;
-	execute: (interaction: ModalSubmitInteraction, client: IClient, args: string[]) => Promise<any>;
+	execute: (interaction: ModalSubmitInteraction, client: IClient, args: string[]) => Promise<unknown>;
 }
 
 export interface EventHandler {
-	name: ObjectValues<typeof Events>;
+	name: string;
 	once?: boolean;
-	execute: (client: IClient, ...args: any[]) => Promise<any>;
+	execute: (client: IClient, ... args: unknown[]) => Promise<unknown>;
 }

@@ -1,5 +1,5 @@
 import {SimpleGuild, SimpleInvite} from "../Typings/DatabaseTypes";
-import {Database} from "../Utils/Database";
+import {Database} from "../Database";
 import {client} from "../Client";
 import {ParseInvite} from "../Utils/Parsers";
 import {Guild, Invite} from "discord.js";
@@ -85,7 +85,7 @@ export async function GetInvite(code: string): Promise<SimpleInvite | null> {
 /**
  * Evicts the given invite from cache
  */
-export async function DiscardInvite(code: string) {
+export async function DiscardInvite(code: string): Promise<void> {
 	if (INVALID_INVITE_CODES.has(code)) {
 		return; // nothing to do
 	}

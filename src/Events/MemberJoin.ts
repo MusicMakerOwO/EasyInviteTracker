@@ -11,8 +11,8 @@ import {GetGuild} from "../CRUD/Guild";
 import config from "../config";
 
 export default {
-	name: 'guildMemberAdd',
-	execute: async (client, member: GuildMember) => {
+	name   : 'guildMemberAdd',
+	execute: async (client, member: GuildMember): Promise<void> => {
 		const guild = member.guild;
 
 		SaveMember(guild, member);
@@ -26,8 +26,8 @@ export default {
 		if (member.user.bot) return;
 
 		const embed = {
-			color: COLOR.MEMBER_JOIN,
-			title: "Member Joined",
+			color      : COLOR.MEMBER_JOIN,
+			title      : "Member Joined",
 			description: `
 **@${member.user.username}** (${member.user.id})	
 **Bot**: ${member.user.bot ? '✅' : '❌'}
@@ -41,13 +41,13 @@ export default {
 You have too many active invites (${oldInvites.length}/${MAX_INVITES_PER_GUILD}). It is recommended you delete invites with no uses. You may click the button below to do this automatically`;
 
 			return SendLog(guild, {
-				embeds: [embed],
+				embeds    : [embed],
 				components: [{
-					type: 1,
+					type      : 1,
 					components: [{
-						type: 2,
-						style: 4,
-						label: "Purge Invites",
+						type     : 2,
+						style    : 4,
+						label    : "Purge Invites",
 						custom_id: "purge-invites"
 					}]
 				}]
@@ -59,7 +59,7 @@ You have too many active invites (${oldInvites.length}/${MAX_INVITES_PER_GUILD})
 			return Log('WARN', `[!] Could not resolve invite list in guild (${guild.id})`);
 		}
 
-		const oldInviteCache = Object.fromEntries( oldInvites.map(x => [x.code, x]) );
+		const oldInviteCache = Object.fromEntries(oldInvites.map(x => [x.code, x]));
 
 		let usedInvite: SimpleInvite | undefined;
 		for (const comparingInvite of newInvites) {
@@ -77,22 +77,22 @@ You have too many active invites (${oldInvites.length}/${MAX_INVITES_PER_GUILD})
 		}
 
 		const buttons = {
-			type: 1,
+			type      : 1,
 			components: [
 				{
-					type: 2,
-					style: 2,
-					label: 'Invite Info',
+					type     : 2,
+					style    : 2,
+					label    : 'Invite Info',
 					custom_id: `invite-info_${usedInvite?.code}`,
-					emoji: '📨',
-					disabled: !usedInvite,
+					emoji    : '📨',
+					disabled : !usedInvite,
 				},
 				{
-					type: 2,
-					style: 2,
-					label: "User Info",
+					type     : 2,
+					style    : 2,
+					label    : "User Info",
 					custom_id: `user-info_${member.user.id}`,
-					emoji: '👤'
+					emoji    : '👤'
 				}
 			]
 		}
@@ -122,7 +122,7 @@ ${EMOJI.WARNING} I couldn't find the invite this person used`
 		}
 
 		return SendLog(guild, {
-			embeds: [embed],
+			embeds    : [embed],
 			components: [buttons]
 		});
 	}

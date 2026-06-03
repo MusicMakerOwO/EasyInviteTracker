@@ -9,7 +9,7 @@ import {COLOR} from "../Utils/Constants";
 
 export default {
 	name: 'inviteCreate',
-	execute: async (client: IClient, invite: Invite) => {
+	execute: async (client: IClient, invite: Invite): Promise<void> => {
 		if (!invite.guild) return Log('ERROR', invite);
 
 		const guild = client.guilds.cache.get(invite.guild.id)!;
@@ -43,7 +43,7 @@ export default {
 			}]
 		}
 
-		SendLog(guild, {
+		void SendLog(guild, {
 			embeds: [embed],
 			components: [button]
 		});

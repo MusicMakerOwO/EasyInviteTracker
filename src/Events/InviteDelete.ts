@@ -13,16 +13,16 @@ import {SimpleUser} from "../Typings/DatabaseTypes";
 
 export default {
 	name: 'inviteDelete',
-	execute: async (client: IClient, invite: Invite) => {
+	execute: async (client: IClient, invite: Invite): Promise<void> => {
 		if (!invite.guild) return Log('ERROR', invite);
 
 		const guild = client.guilds.cache.get(invite.guild.id)!;
 		const parsed = await GetInvite(invite.code); // it's a partial so need to find the remaining metadata in cache
-		DiscardInvite(invite.code);
+		void DiscardInvite(invite.code);
 
 		// cache miss, database is out of sync :(
 		if (!parsed) {
-			SendLog(guild, {
+			void SendLog(guild, {
 				embeds: [{
 					color: COLOR.INVITE_DELETE,
 					title: "Invite Deleted",
@@ -32,7 +32,7 @@ An invite was deleted but I couldn't find any information about it :(
 This is likely a discord issue but please contact support if it continues to happen`.trim()
 				}]
 			})
-			SyncInvitesForGuild(guild);
+			void SyncInvitesForGuild(guild);
 			return;
 		}
 
@@ -65,6 +65,6 @@ This is likely a discord issue but please contact support if it continues to hap
 **Deleted By**: ${deletingUser ? `@${deletingUser.username} (${deletingUser.id})` : '`Unknown`'}`
 		}
 
-		SendLog(guild, { embeds: [embed] });
+		void SendLog(guild, { embeds: [embed] });
 	}
 } as EventHandler;

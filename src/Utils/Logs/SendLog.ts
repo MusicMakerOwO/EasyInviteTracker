@@ -1,10 +1,10 @@
 import {Guild, MessageCreateOptions} from "discord.js";
-import {Database} from "../Database";
+import {Database} from "../../Database";
 import {client} from "../../Client";
-import {inspect} from "util";
+import {inspect} from "node:util";
 import config from "../../config";
 
-export async function SendLog(guild: Guild, message: MessageCreateOptions) {
+export async function SendLog(guild: Guild, message: MessageCreateOptions): Promise<void> {
 	if (config.DEV_MODE) console.log( inspect(message, {depth: undefined, colors: true}) );
 
 	const channelID = Database.prepare("SELECT log_channel FROM Guilds WHERE id = ?").pluck().get(guild.id) as string | undefined;
@@ -16,7 +16,7 @@ export async function SendLog(guild: Guild, message: MessageCreateOptions) {
 	try {
 		await channel.send(message);
 	} catch (error) {
-		// @ts-ignore
+		// @ts-expect-error | I don't care enough to do a full type check lmao
 		if (error.code === 50013) {
 			// Missing permissions
 			return;

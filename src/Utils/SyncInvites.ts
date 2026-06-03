@@ -1,11 +1,11 @@
 import {Guild} from "discord.js";
-import {Database} from "./Database";
+import {Database} from "../Database";
 import {FetchInvites} from "./Parsers/FetchInvites";
 import {Log} from "./Log";
 import {SendLog} from "./Logs/SendLog";
 import {COLOR, MAX_INVITES_PER_GUILD} from "./Constants";
 
-export async function SyncInvitesForGuild(guild: Guild) {
+export async function SyncInvitesForGuild(guild: Guild): Promise<void> {
 	const start = process.hrtime.bigint();
 
 	Database.prepare(`DELETE FROM Invites WHERE guild_id = ?`).run(guild.id);
@@ -15,7 +15,7 @@ export async function SyncInvitesForGuild(guild: Guild) {
 	if (invites.length >= MAX_INVITES_PER_GUILD) {
 		const deletableInvites = invites.filter(invite => invite.uses === 0).length;
 
-		SendLog(guild, {
+		void SendLog(guild, {
 			embeds: [{
 				color: COLOR.ERROR,
 				title: "Excess Invites Detected",

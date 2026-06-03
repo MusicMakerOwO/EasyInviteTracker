@@ -1,5 +1,3 @@
-import {cpus} from "node:os";
-
 export const ROOT_FOLDER = __dirname + '/..';
 
 export const DB_SETUP_FILE = `${ROOT_FOLDER}/../DB_SETUP.sql`;
@@ -18,10 +16,9 @@ export const COLOR = {
 	PRIMARY       : 0x039BE5, // light blue
 	ERROR         : 0xFF0000,
 
-	MEMBER_JOIN   : 0x039BE5, // light blue
-	MEMBER_LEAVE  : 0xF44336, // red
+	MEMBER_JOIN   : 0x43B581, // green
 
-	INVITE_CREATE : 0x5378FF, // green
+	INVITE_CREATE : 0x5378FF, // light blue
 	INVITE_DELETE : 0xF44336, // red
 } as const;
 
@@ -33,8 +30,6 @@ export const EMOJI = {
 	SUCCESS : '🔌',
 	LOADING : '📡'
 } as const;
-
-export const CORES_AVAILABLE = cpus().length;
 
 export const INVITE_PURGE_REASON = "Purging invites";
 export const MAX_INVITES_PER_GUILD = 300;

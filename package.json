@@ -5,15 +5,24 @@
 		"source-map-support": "^0.5.21"
 	},
 	"scripts": {
-		"check": "echo \"Checking for errors ...\" && tsc --noEmit",
-		"build": "echo \"Checking for errors ...\" && tsc --noEmit && echo \"Deleting old data ...\" && rm -rf build && echo \"Compiling scripts ...\" && tsc -b",
-		"build:go": "echo \"Checking for errors ...\" && tsgo --noEmit && echo \"Deleting old data ...\" && rm -rf build && echo \"Compiling scripts ...\" && tsgo -b",
+		"check": "echo \"Checking for errors ...\" && tsgo --noEmit && echo \"Running linter...\" && eslint .",
+		"build": "echo \"Checking for errors ...\" && tsgo --noEmit && echo \"Running linter...\" && eslint . && echo \"Deleting old data ...\" && rm -rf build && echo \"Compiling scripts ...\" && tsgo -b",
 		"start": "node build/index.js",
 		"linecount": "find . -type f -name '*.ts' -not -path './node_modules/*' -exec wc -l {} + | sort -n -r | head -n 10",
-		"test": "echo \"No tests specified\" && exit 0"
+		"test": "echo \"No tests specified\" && exit 0",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix"
 	},
 	"devDependencies": {
+		"@eslint/core": "^1.2.1",
+		"@eslint/js": "^10.0.1",
 		"@types/better-sqlite3": "^7.6.13",
-		"@types/node": "^22.13.1"
+		"@types/node": "^22.13.1",
+		"@typescript/native-preview": "^7.0.0-dev.20260603.1",
+		"discord-api-types": "^0.38.48",
+		"eslint": "^10.4.1",
+		"eslint-plugin-unicorn": "^64.0.0",
+		"jiti": "^2.7.0",
+		"typescript-eslint": "^8.60.1"
 	}
 }

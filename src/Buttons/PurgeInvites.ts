@@ -6,7 +6,7 @@ import {CheckPermissions} from "../Utils/CheckPermissions";
 
 export default {
 	customID: 'purge-invites',
-	execute: async function(interaction, client, args) {
+	execute: async function(interaction) {
 		if (!CheckPermissions(interaction, ['ManageGuild'])) return;
 
 		const inviteList = GetAllInvites(interaction.guild!);
@@ -43,11 +43,11 @@ export default {
 			})
 		}
 
-		interaction.editReply({
+		void interaction.editReply({
 			embeds: [{
 				color: COLOR.PRIMARY,
 				description: `${EMOJI.SUCCESS} Successfully deleted ${unusedInvites.length} invites`
 			}]
 		})
 	}
-} as ButtonHandler;
+} satisfies ButtonHandler as ButtonHandler;

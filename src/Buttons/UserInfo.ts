@@ -1,7 +1,7 @@
 import {ButtonHandler} from "../Typings/HandlerTypes";
 import {GetUser} from "../CRUD/Users";
 import {COLOR} from "../Utils/Constants";
-import {Database} from "../Utils/Database";
+import {Database} from "../Database";
 import {CheckPermissions} from "../Utils/CheckPermissions";
 
 export default {
@@ -47,4 +47,4 @@ Bot: ${user.bot ? '❌' : '✅'}`.trim()
 			embeds: [embed]
 		});
 	}
-} as ButtonHandler;
+} satisfies ButtonHandler as ButtonHandler;

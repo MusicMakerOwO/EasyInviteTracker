@@ -1,6 +1,6 @@
 import {CommandHandler} from "../Typings/HandlerTypes";
 import {SlashCommandBuilder} from "discord.js";
-import {Database} from "../Utils/Database";
+import {Database} from "../Database";
 import {COLOR} from "../Utils/Constants";
 
 export default {
@@ -28,4 +28,4 @@ export default {
 
 		await interaction.reply({ embeds: [embed] });
 	}
-} as CommandHandler;
+} satisfies CommandHandler as CommandHandler;

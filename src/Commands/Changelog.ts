@@ -41,7 +41,7 @@ export default {
 			),
 		])
 	),
-	execute: async function(interaction, client) {
+	execute: async function(interaction) {
 		const input = interaction.options.getString('version') || 'latest';
 
 		if (input === 'all') {
@@ -88,4 +88,4 @@ https://github.com/MusicMakerOwO/EasyInviteTracker/commits/main`
 			embeds: [embed]
 		});
 	}
-} as CommandHandler;
+} satisfies CommandHandler as CommandHandler;

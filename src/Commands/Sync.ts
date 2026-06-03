@@ -1,6 +1,6 @@
 import {SlashCommandBuilder} from "discord.js";
 import {CommandHandler} from "../Typings/HandlerTypes";
-import {Database} from "../Utils/Database";
+import {Database} from "../Database";
 import {COLOR, EMOJI} from "../Utils/Constants";
 import {SyncInvitesForGuild} from "../Utils/SyncInvites";
 import {CheckPermissions} from "../Utils/CheckPermissions";
@@ -11,7 +11,7 @@ export default {
 	data: new SlashCommandBuilder()
 	.setName('sync')
 	.setDescription('Forcefully refresh invites for the server'),
-	async execute(interaction, client) {
+	async execute(interaction) {
 		if (!CheckPermissions(interaction, ['ManageGuild'])) return;
 
 		const last_sync = Database.prepare("SELECT last_sync FROM Guilds WHERE id = ?").pluck().get(interaction.guildId) as number | undefined ?? 0;
@@ -35,11 +35,11 @@ export default {
 
 		await SyncInvitesForGuild(interaction.guild!);
 
-		interaction.editReply({
+		void interaction.editReply({
 			embeds: [{
 				color: COLOR.PRIMARY,
 				description: `${EMOJI.SUCCESS} Invites have been refreshed in this server`
 			}]
 		})
 	}
-} as CommandHandler;
+} satisfies CommandHandler as CommandHandler;

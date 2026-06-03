@@ -1,7 +1,7 @@
 import {Guild, GuildMember, User} from "discord.js";
 import {SimpleUser} from "../Typings/DatabaseTypes";
 import {ParseUser} from "../Utils/Parsers";
-import {Database} from "../Utils/Database";
+import {Database} from "../Database";
 import {client} from "../Client";
 import {Log} from "../Utils/Log";
 
@@ -61,7 +61,7 @@ export async function GetUser(id: string): Promise<SimpleUser | null> {
 /**
  * Evicts the user from database, will have to be fetched again
  */
-export function DiscardUser(id: string) {
+export function DiscardUser(id: string): void {
 	if (INVALID_USER_IDS.has(id)) {
 		return; // nothing to do
 	}
@@ -72,7 +72,7 @@ export function DiscardUser(id: string) {
 /**
  * Save a member (and it's internal user) to the database
  */
-export function SaveMember(guild: Guild, member: GuildMember) {
+export function SaveMember(guild: Guild, member: GuildMember): void {
 	SaveUser(member.user);
 
 	Database.prepare(`

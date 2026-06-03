@@ -1,12 +1,12 @@
 import {Guild} from "discord.js";
 import {Log} from "./Log";
-import {Database} from "./Database";
+import {Database} from "../Database";
 import {SaveUser} from "../CRUD/Users";
 import config from "../config";
 
 const MAX_FETCH_SIZE = 1000;
 
-export async function SyncMembersForGuild(guild: Guild) {
+export async function SyncMembersForGuild(guild: Guild): Promise<void> {
 	if (config.DEV_MODE) return;
 
 	if (guild.memberCount > MAX_FETCH_SIZE) {

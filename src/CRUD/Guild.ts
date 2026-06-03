@@ -1,5 +1,5 @@
 import {SimpleGuild} from "../Typings/DatabaseTypes";
-import {Database} from "../Utils/Database";
+import {Database} from "../Database";
 import {client} from "../Client";
 import {ParseGuild} from "../Utils/Parsers";
 import {AnonymousGuild} from "discord.js";
@@ -59,7 +59,7 @@ export async function GetGuild(id: string): Promise<SimpleGuild | null> {
 /**
  * Evicts the given guild from cache
  */
-export async function DiscardGuild(id: string) {
+export async function DiscardGuild(id: string): Promise<void> {
 	if (INVALID_GUILD_IDS.has(id)) {
 		return; // nothing to do
 	}

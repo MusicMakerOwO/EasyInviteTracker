@@ -2,12 +2,12 @@ import {AutocompleteInteraction, GuildMember, Interaction} from "discord.js";
 import {PermissionFlagsBits} from "discord-api-types/v10";
 import {COLOR} from "./Constants";
 
-export function CheckPermissions(interaction: Exclude<Interaction, AutocompleteInteraction>, requiredPermissions: (keyof typeof PermissionFlagsBits)[]) {
+export function CheckPermissions(interaction: Exclude<Interaction, AutocompleteInteraction>, requiredPermissions: (keyof typeof PermissionFlagsBits)[]): boolean {
 	const memberPermissions = (interaction.member as GuildMember).permissions
 	const missingPermissions = requiredPermissions.filter(x => !memberPermissions.has(x));
 	if (missingPermissions.length === 0) return true;
 
-	interaction.reply({
+	void interaction.reply({
 		ephemeral: true,
 		embeds: [{
 			color: COLOR.ERROR,

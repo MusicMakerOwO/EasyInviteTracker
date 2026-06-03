@@ -1,6 +1,6 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import BetterSqlite3 from 'better-sqlite3';
-import { DB_SETUP_FILE, DB_FILE } from './Constants';
+import { DB_SETUP_FILE, DB_FILE } from './Utils/Constants';
 
 function ParseQueries(fileContent: string) {
 	const queries: string[] = [];
@@ -10,7 +10,7 @@ function ParseQueries(fileContent: string) {
 
 	const lines = fileContent.split('\n');
 	for (let i = 0; i < lines.length; i++) {
-		let line = lines[i].trim();
+		const line = lines[i].trim();
 
 		if (line.startsWith('--')) continue;
 

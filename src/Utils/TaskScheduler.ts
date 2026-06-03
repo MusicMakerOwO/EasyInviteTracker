@@ -30,7 +30,7 @@ export const TaskScheduler = new class {
 
         this.timeout = setTimeout(() => {
 			this.#runNextTask();
-		}, timeUntilNext);
+		}, timeUntilNext).unref();
     }
 
     #runNextTask() {

@@ -59,6 +59,7 @@ __This cannot be undone!__
 
 		try {
 			await client.rest.delete(Routes.invite(invite.code),  { reason: `Deleted by @${interaction.user.username} (${interaction.user.id})` })
+			client.invite_delete_ownership.set(invite.code, interaction.user.id);
 		} catch (error) {
 			Log('ERROR', error);
 			await interaction.editReply({
@@ -70,7 +71,7 @@ __This cannot be undone!__
 			return;
 		}
 
-		DiscardInvite(invite.code);
+		void DiscardInvite(invite.code);
 
 		client.invite_delete_ownership.set(invite.code, interaction.user.id);
 
@@ -81,4 +82,4 @@ __This cannot be undone!__
 			}]
 		});
 	}
-} as ButtonHandler;
+} satisfies ButtonHandler as ButtonHandler;

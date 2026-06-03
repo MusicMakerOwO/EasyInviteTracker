@@ -1,7 +1,7 @@
 import config from '../config';
 import https from 'node:https';
 import { Log } from './Log';
-import {InteractionContextType, SlashCommandBuilder} from "discord.js";
+import {InteractionContextType} from "discord.js";
 import { IClient } from "../Client";
 
 // This is all that the Routes.applicationCommands() method does, but we don't need the extra dependency if it's literally just a string lmao
@@ -10,7 +10,7 @@ const PUBLIC_ROUTE = `https://discord.com/api/v10/applications/${config.APP_ID}/
 
 const DEFAULT_COMMAND_ACCESS = [ InteractionContextType.Guild ];
 
-export async function RegisterCommands(client: IClient) {
+export async function RegisterCommands(client: IClient): Promise<void> {
 
 	Log('INFO', `Started refreshing application (/) commands`);
 
@@ -19,7 +19,7 @@ export async function RegisterCommands(client: IClient) {
 	const localCommands = [...client.commands.values(), ...client.context.values()];
 	for (let i = 0; i < localCommands.length; i++) {
 		const command = localCommands[i];
-		const commandData: ReturnType<SlashCommandBuilder['toJSON']> = command.data instanceof SlashCommandBuilder ? command.data.toJSON() : command.data;
+		const commandData = command.data.toJSON()
 
 		if (commandNames.includes(commandData.name)) continue;
 
@@ -36,7 +36,7 @@ export async function RegisterCommands(client: IClient) {
 	}
 }
 
-async function MakeRequest(method: Capitalize<string>, route: string, body?: unknown): Promise<any> {
+async function MakeRequest(method: Capitalize<string>, route: string, body?: unknown): Promise<unknown> {
 	return new Promise((resolve, reject) => {
 		const req = https.request(route, {
 			method,
