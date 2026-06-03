@@ -4,7 +4,7 @@ import {COLOR} from "./Constants";
 
 export function CheckPermissions(interaction: Exclude<Interaction, AutocompleteInteraction>, requiredPermissions: (keyof typeof PermissionFlagsBits)[]): boolean {
 	const memberPermissions = (interaction.member as GuildMember).permissions
-	const missingPermissions = requiredPermissions.filter(x => !memberPermissions.has(x));
+	const missingPermissions = requiredPermissions.filter(x => !memberPermissions.has( PermissionFlagsBits[x] ));
 	if (missingPermissions.length === 0) return true;
 
 	void interaction.reply({
