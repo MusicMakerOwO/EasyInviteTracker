@@ -57,9 +57,10 @@ __This cannot be undone!__
 
 		await interaction.deferUpdate();
 
+		client.invite_delete_ownership.set(invite.code, interaction.user.id);
+
 		try {
-			await client.rest.delete(Routes.invite(invite.code),  { reason: `Deleted by @${interaction.user.username} (${interaction.user.id})` })
-			client.invite_delete_ownership.set(invite.code, interaction.user.id);
+			await client.rest.delete(`/invites/${invite.code}`,  { reason: `Deleted by @${interaction.user.username} (${interaction.user.id})` });
 		} catch (error) {
 			Log('ERROR', error);
 			await interaction.editReply({
@@ -72,8 +73,6 @@ __This cannot be undone!__
 		}
 
 		void DiscardInvite(invite.code);
-
-		client.invite_delete_ownership.set(invite.code, interaction.user.id);
 
 		await interaction.editReply({
 			embeds: [{
