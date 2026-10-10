@@ -5,6 +5,7 @@ import {ParseInvite} from "../Utils/Parsers";
 import {Guild, Invite} from "discord.js";
 import {Log} from "../Utils/Log";
 import {SaveGuild} from "./Guild";
+import { SECONDS } from "../Utils/Constants";
 
 const INVALID_INVITE_CODES = new Set();
 
@@ -78,6 +79,7 @@ export async function GetInvite(code: string): Promise<SimpleInvite | null> {
 	} catch (error) {
 		Log('ERROR', error);
 		INVALID_INVITE_CODES.add(code);
+		setTimeout( () => INVALID_INVITE_CODES.delete(code),  SECONDS.MINUTE * 10 * 1000 ).unref();
 		return null;
 	}
 }

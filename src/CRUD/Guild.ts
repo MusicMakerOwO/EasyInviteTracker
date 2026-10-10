@@ -3,6 +3,7 @@ import {Database} from "../Database";
 import {client} from "../Client";
 import {ParseGuild} from "../Utils/Parsers";
 import {AnonymousGuild} from "discord.js";
+import { SECONDS } from "../Utils/Constants";
 
 const INVALID_GUILD_IDS = new Set();
 
@@ -50,6 +51,7 @@ export async function GetGuild(id: string): Promise<SimpleGuild | null> {
 	const fetched = await client.guilds.fetch(id).catch( () => null );
 	if (!fetched) {
 		INVALID_GUILD_IDS.add(id);
+		setTimeout( () => INVALID_GUILD_IDS.delete(id),  SECONDS.MINUTE * 10 * 1000 ).unref();
 		return null;
 	}
 

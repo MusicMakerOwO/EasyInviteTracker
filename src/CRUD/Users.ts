@@ -4,6 +4,7 @@ import {ParseUser} from "../Utils/Parsers";
 import {Database} from "../Database";
 import {client} from "../Client";
 import {Log} from "../Utils/Log";
+import { SECONDS } from "../Utils/Constants";
 
 const INVALID_USER_IDS = new Set();
 
@@ -54,6 +55,7 @@ export async function GetUser(id: string): Promise<SimpleUser | null> {
 	} catch (error) {
 		Log('ERROR', error);
 		INVALID_USER_IDS.add(id);
+		setTimeout( () => INVALID_USER_IDS.delete(id),  SECONDS.MINUTE * 10 * 1000 ).unref();
 		return null;
 	}
 }
