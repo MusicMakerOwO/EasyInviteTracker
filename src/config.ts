@@ -3,29 +3,13 @@ import {Log} from "./Utils/Log";
 export type IConfig = {
 	TOKEN: string;
 	APP_ID: string;
-
 	DEV_MODE: boolean;
-
-	HOT_RELOAD: boolean;
-	PROCESS_HANDLERS: boolean;
-	CHECK_INTENTS: boolean;
-	CHECK_EVENT_NAMES: boolean;
-	REGISTER_COMMANDS: boolean;
-	FANCY_ERRORS: boolean;
 }
 
 const ConfigTemplate: { [K in keyof IConfig]: IConfig[K] extends string ? 'string' : 'boolean' } = {
 	TOKEN: 'string',
 	APP_ID: 'string',
-
 	DEV_MODE: 'boolean',
-
-	HOT_RELOAD: 'boolean',
-	PROCESS_HANDLERS: 'boolean',
-	CHECK_INTENTS: 'boolean',
-	CHECK_EVENT_NAMES: 'boolean',
-	REGISTER_COMMANDS: 'boolean',
-	FANCY_ERRORS: 'boolean'
 }
 
 /* eslint-disable @typescript-eslint/no-require-imports */
