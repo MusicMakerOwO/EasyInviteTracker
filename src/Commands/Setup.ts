@@ -2,6 +2,8 @@ import {SlashCommandBuilder, TextChannel} from "discord.js";
 import {CommandHandler} from "../Typings/HandlerTypes";
 import {COLOR, EMOJI} from "../Utils/Constants";
 import {Database} from "../Database";
+import {SaveGuild} from "../CRUD/Guild";
+import {SyncInvitesForGuild} from "../Utils/SyncInvites";
 import {CheckPermissions} from "../Utils/CheckPermissions";
 
 export default {
@@ -62,14 +64,32 @@ ${EMOJI.ERROR} Please make sure I have the following permissions:
 			})
 		}
 
-		Database.prepare("UPDATE Guilds SET log_channel = ? WHERE id = ?").run(channel.id, interaction.guildId);
+		SaveGuild(interaction.guild!); // the bot may have been added after startup, no row yet
+		const saved = Database.prepare("UPDATE Guilds SET log_channel = ? WHERE id = ?").run(channel.id, interaction.guildId);
+		if (saved.changes === 0) {
+			return interaction.editReply({
+				embeds: [{
+					color: COLOR.ERROR,
+					description: `${EMOJI.ERROR} Something went wrong - I couldn't save the log channel, please try again`
+				}]
+			})
+		}
+
+		// counts are not kept up to date while logging is off, start from a fresh list
+		void SyncInvitesForGuild(interaction.guild!);
+
+		let description = `
+${EMOJI.SUCCESS} Setup successful!
+-# Logs will appear as people interact with your server`.trim();
+
+		if (!permissions.has("ViewAuditLog")) {
+			description += `\n-# Give me \`View Audit Log\` if you want to see who deleted an invite`;
+		}
 
 		void interaction.editReply({
 			embeds: [{
 				color: COLOR.PRIMARY,
-				description: `
-${EMOJI.SUCCESS} Setup successful!
--# Logs will appear as people interact with your server`.trim()
+				description: description
 			}]
 		});
 	}
