@@ -23,10 +23,10 @@ export default {
 			})
 		}
 
-		const memberMetadata = Database.prepare("SELECT joined_at, left_at FROM Members WHERE guild_id = ? AND id = ?").get(interaction.guildId, targetID) as { joined_at: number | undefined; left_at: number | undefined };
+		const memberMetadata = Database.prepare("SELECT joined_at, left_at FROM Members WHERE guild_id = ? AND id = ?").get(interaction.guildId, targetID) as { joined_at: number; left_at: number | null } | undefined;
 
-		const joinedTimestamp = memberMetadata.joined_at ? `<t:${memberMetadata.joined_at}:f>` : null;
-		const leftTimestamp   = memberMetadata.left_at ? `<t:${memberMetadata.left_at}:f>` : null;
+		const joinedTimestamp = memberMetadata?.joined_at ? `<t:${memberMetadata.joined_at}:f>` : null;
+		const leftTimestamp   = memberMetadata?.left_at ? `<t:${memberMetadata.left_at}:f>` : null;
 
 		const embed = {
 			color: COLOR.PRIMARY,
