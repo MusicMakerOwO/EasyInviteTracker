@@ -32,12 +32,15 @@ export default {
 			})
 		}
 
-		const maxPages = ~~(inviteList.length / PAGE_SIZE);
+		const maxPages = Math.ceil(inviteList.length / PAGE_SIZE) - 1;
 
-		const page =
+		const requestedPage =
 			targetPage === 'first' ? 0 :
 			targetPage === 'last' ? maxPages :
-				parseInt(targetPage, 10);
+				parseInt(targetPage, 10) || 0;
+
+		// buttons on an old message may point to a page that no longer exists
+		const page = Math.min( Math.max(requestedPage, 0), maxPages );
 
 		const embed = {
 			color: COLOR.PRIMARY,
@@ -50,7 +53,7 @@ export default {
 			components: [{
 				type: 3,
 				custom_id: 'invite-info',
-				options: new Array( Math.min(PAGE_SIZE, inviteList.length) )
+				options: [] as { label: string, value: string }[]
 			}]
 		}
 
@@ -61,10 +64,10 @@ export default {
 			if (invite.owner_id) embed.description += `\nOwner: <@${invite.owner_id}>`;
 			embed.description += `\n\n`;
 
-			selectMenu.components[0].options[i - page * PAGE_SIZE] = {
+			selectMenu.components[0].options.push({
 				label: `Code: ${invite.code} | Uses: ${invite.uses}`,
 				value: invite.code
-			}
+			});
 		}
 
 		const navButtons = {
