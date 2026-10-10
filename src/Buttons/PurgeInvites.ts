@@ -6,7 +6,7 @@ import {CheckPermissions} from "../Utils/CheckPermissions";
 
 export default {
 	customID: 'purge-invites',
-	execute: async function(interaction) {
+	execute: async function(interaction, client) {
 		if (!CheckPermissions(interaction, ['ManageGuild'])) return;
 
 		const inviteList = GetAllInvites(interaction.guild!);
@@ -26,8 +26,14 @@ export default {
 
 		const promises = [];
 		for (const invite of unusedInvites) {
+			client.invite_purge_codes.add(invite.code);
 			promises.push(
 				interaction.guild!.invites.delete(invite.code, `${INVITE_PURGE_REASON} | @${interaction.user.username}`)
+				.catch( (error: unknown) => {
+					// never deleted, there is no event coming to clear it
+					client.invite_purge_codes.delete(invite.code);
+					throw error;
+				})
 			);
 		}
 

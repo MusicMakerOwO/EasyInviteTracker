@@ -16,7 +16,7 @@ export async function RegisterCommands(client: IClient): Promise<void> {
 
 	const commands = [];
 	const commandNames: string[] = [];
-	const localCommands = [...client.commands.values(), ...client.context.values()];
+	const localCommands = Array.from( client.commands.values() );
 	for (let i = 0; i < localCommands.length; i++) {
 		const command = localCommands[i];
 		const commandData = command.data.toJSON()
