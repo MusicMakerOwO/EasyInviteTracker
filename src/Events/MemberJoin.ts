@@ -3,7 +3,7 @@ import {DMChannel, GuildMember} from "discord.js";
 import {FetchInvites} from "../Utils/Parsers/FetchInvites";
 import {SimpleInvite} from "../Typings/DatabaseTypes";
 import {Log} from "../Utils/Log";
-import {GetAllInvites} from "../CRUD/Invites";
+import {GetAllInvites, ReplaceInvites} from "../CRUD/Invites";
 import {COLOR, EMOJI, MAX_INVITES_PER_GUILD} from "../Utils/Constants";
 import {SendLog} from "../Utils/Logs/SendLog";
 import {GetUser, SaveMember} from "../CRUD/Users";
@@ -56,7 +56,7 @@ You have too many active invites (${oldInvites.length}/${MAX_INVITES_PER_GUILD})
 		}
 
 		const newInvites = await FetchInvites(guild);
-		if (newInvites.length === 0) {
+		if (!newInvites) {
 			return Log('WARN', `[!] Could not resolve invite list in guild (${guild.id})`);
 		}
 
@@ -76,6 +76,9 @@ You have too many active invites (${oldInvites.length}/${MAX_INVITES_PER_GUILD})
 				break;
 			}
 		}
+
+		// the next join is compared against these counts
+		ReplaceInvites(guild.id, newInvites);
 
 		const buttons = {
 			type      : 1,

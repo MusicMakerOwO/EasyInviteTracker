@@ -3,6 +3,7 @@ import {CommandHandler} from "../Typings/HandlerTypes";
 import {Database} from "../Database";
 import {COLOR, EMOJI} from "../Utils/Constants";
 import {SyncInvitesForGuild} from "../Utils/SyncInvites";
+import {SaveGuild} from "../CRUD/Guild";
 import {CheckPermissions} from "../Utils/CheckPermissions";
 
 const SYNC_COOLDOWN = 60; // seconds
@@ -24,6 +25,7 @@ export default {
 				}]
 			});
 		}
+		SaveGuild(interaction.guild!); // make sure there is a row to put the cooldown on
 		Database.prepare("UPDATE Guilds SET last_sync = ? WHERE id = ?").run(unixEpoch, interaction.guildId)
 
 		await interaction.reply({
@@ -33,7 +35,15 @@ export default {
 			}]
 		})
 
-		await SyncInvitesForGuild(interaction.guild!);
+		const synced = await SyncInvitesForGuild(interaction.guild!);
+		if (!synced) {
+			return interaction.editReply({
+				embeds: [{
+					color: COLOR.ERROR,
+					description: `${EMOJI.ERROR} I couldn't fetch the invites for this server\nMake sure I have the \`Manage Server\` permission and try again`
+				}]
+			});
+		}
 
 		void interaction.editReply({
 			embeds: [{

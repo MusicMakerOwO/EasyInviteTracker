@@ -2,17 +2,27 @@ import {Guild} from "discord.js";
 import {Database} from "../Database";
 import {FetchInvites} from "./Parsers/FetchInvites";
 import {Log} from "./Log";
+import {ReplaceInvites} from "../CRUD/Invites";
 import {SendLog} from "./Logs/SendLog";
 import {COLOR, MAX_INVITES_PER_GUILD} from "./Constants";
 
-export async function SyncInvitesForGuild(guild: Guild): Promise<void> {
+/**
+ * Replaces the cached invites of the guild with the live list from Discord.
+ * Returns `false` if the invites could not be fetched, the cache is left untouched in that case.
+ */
+export async function SyncInvitesForGuild(guild: Guild): Promise<boolean> {
 	const start = process.hrtime.bigint();
 
-	Database.prepare(`DELETE FROM Invites WHERE guild_id = ?`).run(guild.id);
-	Database.prepare("INSERT INTO Guilds (id, name) VALUES (?, ?) ON CONFLICT (id) DO UPDATE SET name = excluded.name").run(guild.id, guild.name);
+	Database.prepare(`
+		INSERT INTO Guilds (id, name, vanity_code) VALUES (?, ?, ?)
+		ON CONFLICT (id) DO UPDATE SET name = excluded.name, vanity_code = excluded.vanity_code
+	`).run(guild.id, guild.name, guild.vanityURLCode);
 
+	// fetch before touching the cache, a failed fetch must not wipe what we already have
 	const invites = await FetchInvites(guild);
-	if (invites.length >= MAX_INVITES_PER_GUILD) {
+	if (!invites) return false;
+
+	if (invites.length > MAX_INVITES_PER_GUILD) {
 		const deletableInvites = invites.filter(invite => invite.uses === 0).length;
 
 		void SendLog(guild, {
@@ -40,34 +50,12 @@ You may also press the button below to do this automatically.
 		});
 	}
 
-	const InviteQuery = Database.prepare(`
-		INSERT INTO Invites (code, guild_id, channel_id, owner_id, uses, created_at, expires_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?)
-		ON CONFLICT (code) DO UPDATE SET
-			uses = excluded.uses
-	`);
-
-	for (const invite of invites) {
-		try {
-			InviteQuery.run(
-				invite.code,
-				invite.guild_id,
-				invite.channel_id,
-				invite.owner_id,
-				invite.uses,
-				invite.created_at,
-				invite.expires_at
-			);
-		} catch (error) {
-			Log('ERROR', `[~] Failed to insert invite ${invite.code} for ${guild.name} (${guild.id})`);
-			Log('ERROR', error);
-		}
-	}
-
-	Database.prepare("UPDATE Guilds SET vanity_code = ? WHERE id = ?").run(guild.vanityURLCode, guild.id);
+	ReplaceInvites(guild.id, invites);
 
 	const end = process.hrtime.bigint();
 	const duration = Number(end - start) / 1e6;
 
 	Log('DEBUG', `[~] Synced ${invites.length} invites for ${guild.name} (${guild.id}) in ${~~duration}ms`);
+
+	return true;
 }

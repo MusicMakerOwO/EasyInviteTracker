@@ -95,6 +95,39 @@ export async function DiscardInvite(code: string): Promise<void> {
 	Database.prepare("DELETE FROM Invites WHERE code = ?").run(code);
 }
 
+/**
+ * Replaces every cached invite of the guild with the given list, in a single transaction.
+ */
+export function ReplaceInvites(guild_id: string, invites: SimpleInvite[]): void {
+	const InviteQuery = Database.prepare(`
+		INSERT INTO Invites (code, guild_id, channel_id, owner_id, uses, created_at, expires_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?)
+		ON CONFLICT (code) DO UPDATE SET
+			uses = excluded.uses
+	`);
+
+	Database.transaction(() => {
+		Database.prepare("DELETE FROM Invites WHERE guild_id = ?").run(guild_id);
+
+		for (const invite of invites) {
+			try {
+				InviteQuery.run(
+					invite.code,
+					invite.guild_id,
+					invite.channel_id,
+					invite.owner_id,
+					invite.uses,
+					invite.created_at,
+					invite.expires_at
+				);
+			} catch (error) {
+				Log('ERROR', `[~] Failed to insert invite ${invite.code} for guild (${guild_id})`);
+				Log('ERROR', error);
+			}
+		}
+	})();
+}
+
 export function GetAllInvites(guild: Guild): SimpleInvite[] {
 	return Database.prepare("SELECT * FROM Invites WHERE guild_id = ?").all(guild.id) as SimpleInvite[];
 }
