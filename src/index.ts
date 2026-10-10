@@ -35,14 +35,18 @@ for (const menu of Object.values(Menus)) {
 	client.menus.set(menu.customID, menu);
 }
 for (const event of Object.values(Events)) {
-	client.on(event.name, event.execute);
+	if (event.once) {
+		client.once(event.name, event.execute);
+	} else {
+		client.on(event.name, event.execute);
+	}
 }
 
 void RegisterCommands(client);
 
 Log('INFO', `Logging in...`);
 void client.login(client.config.TOKEN);
-client.on('ready', function () {
+client.once('ready', function () {
 	Log('DEBUG', `Logged in as ${client.user!.tag}!`);
 
 	for (const guild of client.guilds.cache.values()) {
