@@ -79,6 +79,6 @@ export function SaveMember(guild: Guild, member: GuildMember): void {
 
 	Database.prepare(`
 		INSERT INTO Members (id, guild_id, joined_at)
-		VALUES (?, ?, ?) ON CONFLICT (id, guild_id) DO NOTHING
+		VALUES (?, ?, ?) ON CONFLICT (id, guild_id) DO UPDATE SET joined_at = excluded.joined_at, left_at = NULL
 	`).run(member.user.id, guild.id, ~~((member.joinedTimestamp ?? Date.now())/1000));
 }

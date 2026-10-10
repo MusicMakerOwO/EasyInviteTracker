@@ -19,17 +19,31 @@ export async function SyncMembersForGuild(guild: Guild): Promise<void> {
 
 	const MemberUpdateQuery = Database.prepare(`
 		INSERT INTO Members (id, guild_id, joined_at) VALUES (?, ?, ?)
-		ON CONFLICT (id, guild_id) DO NOTHING
+		ON CONFLICT (id, guild_id) DO UPDATE SET joined_at = excluded.joined_at, left_at = NULL
 	`);
+	const MemberLeftQuery = Database.prepare("UPDATE Members SET left_at = ? WHERE guild_id = ? AND id = ?");
 
-	for (const member of members.values()) {
-		SaveUser(member.user);
-		MemberUpdateQuery.run(member.user.id, guild.id,
-			member.joinedTimestamp
-				? ~~(member.joinedTimestamp!/1000)
-				: ~~(Date.now()/1000)
-		);
-	}
+	const now = ~~(Date.now()/1000);
+
+	Database.transaction(() => {
+		for (const member of members.values()) {
+			SaveUser(member.user);
+			MemberUpdateQuery.run(member.user.id, guild.id,
+				member.joinedTimestamp
+					? ~~(member.joinedTimestamp/1000)
+					: now
+			);
+		}
+
+		// an incomplete fetch can't tell us who is missing
+		if (members.size < guild.memberCount) return;
+
+		// anyone still marked as present but not in the guild left while we weren't looking
+		const presentIDs = Database.prepare("SELECT id FROM Members WHERE guild_id = ? AND left_at IS NULL").pluck().all(guild.id) as string[];
+		for (const id of presentIDs) {
+			if (!members.has(id)) MemberLeftQuery.run(now, guild.id, id);
+		}
+	})();
 
 	const end = process.hrtime.bigint();
 	const duration = Number(end - start) / 1e6;
